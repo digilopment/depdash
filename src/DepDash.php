@@ -36,8 +36,18 @@ class DepDash
 
             $results[] = $deploymentProject;
         }
-        $this->results = $results;
+        $this->results = $this->mergeData($results);
         return $this;
+    }
+
+    private function mergeData($results)
+    {
+        $data = [];
+        foreach ($this->config['externalData'] as $url) {
+            $contents = json_decode(file_get_contents($url), true);
+            $data = array_merge($data, $contents);
+        }
+        return array_merge($results, $data);
     }
 
     public function withJson()

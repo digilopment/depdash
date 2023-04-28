@@ -16,6 +16,8 @@ class Config
                 $enviromentId = 'mkz-<env>-www1';
                 return str_replace('<env>', $env, $enviromentId);
             },
+            'externalData' => [
+            ]
         ];
     }
 
