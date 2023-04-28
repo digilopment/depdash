@@ -20,7 +20,7 @@ class DepDash
         $results = [];
         foreach ($subdirs as $subdir) {
             $path = $this->dir . DIRECTORY_SEPARATOR . $subdir;
-            chdir($path); // change directory to git repository
+            chdir($path);
 
             $repositoryUrl = $this->getRepositoryUrl();
             $mergeVersion = $this->getMergeVersion();
@@ -116,8 +116,8 @@ class DepDash
     {
         $final = [];
         $dirs = array_diff(scandir($this->dir), array_merge(['..', '.', '.git'], $this->config['projectExclude']));
-        foreach($dirs as $dir){
-            if(is_dir($this->config['getRepositoriesPath'] . '/'. $dir)){
+        foreach ($dirs as $dir) {
+            if (is_dir($this->config['getRepositoriesPath'] . '/' . $dir)) {
                 $final[] = $dir;
             }
         }
@@ -134,8 +134,6 @@ class DepDash
             return explode('.git', $urlWithoutGit)[0];
         }
         return '';
-
-        //return exec("git config --get remote.origin.url | sed 's/\(.*\/\/\)\([^@]*@\)\?\([^\/]*\)/\1\3/'");
     }
 
     private function getMergeVersion()
@@ -158,13 +156,6 @@ class DepDash
         exec('git log --merges -n 1 --format="%ci"', $output, $status);
         return $status === 0 ? $output[0] : '';
     }
-
-    /* private function getLastMergeDate($currentBranch)
-      {
-      $output = exec('git log --merges -n 1 --format="%ci"');
-      return $output === 0 ? '' : $output;
-      }
-     */
 
     private function getCurrentBranch()
     {
