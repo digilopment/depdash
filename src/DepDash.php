@@ -114,7 +114,14 @@ class DepDash
 
     private function getSubdirs()
     {
-        return array_diff(scandir($this->dir), array_merge(['..', '.'], $this->config['projectExclude']));
+        $final = [];
+        $dirs = array_diff(scandir($this->dir), array_merge(['..', '.', '.git'], $this->config['projectExclude']));
+        foreach($dirs as $dir){
+            if(is_dir($this->config['getRepositoriesPath'] . '/'. $dir)){
+                $final[] = $dir;
+            }
+        }
+        return $final;
     }
 
     private function getRepositoryUrl()
