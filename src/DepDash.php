@@ -162,6 +162,22 @@ class DepDash
         return $status === 0 ? $output[0] : '';
     }
 
+    private function getPullPushDate()
+    {
+        // Get the date of the last pull operation
+        $pullDate = trim(exec('git log -1 --format=%cd --date=local'));
+
+        // Get the date of the last push operation
+        $pushDate = trim(exec('git log -1 --format=%cd --date=local --reverse origin/master..master'));
+
+        // Compare the dates and return the newer one
+        if (strtotime($pullDate) > strtotime($pushDate)) {
+            return $pullDate;
+        } else {
+            return $pushDate;
+        }
+    }
+
     private function getLastMergeDate($currentBranch)
     {
         $output = [];
@@ -178,11 +194,36 @@ class DepDash
         return $status === 0 ? $output[0] : '';
     }
 
+    private function getLastActionDeveloper()
+    {
+        // Get the date of the last pull operation
+        $pullDate = trim(exec('git log -1 --format=%cd --date=local'));
+
+        // Get the date of the last push operation
+        $pushDate = trim(exec('git log -1 --format=%cd --date=local --reverse origin/master..master'));
+
+        // Determine whether the last action was a pull or push
+        if (strtotime($pullDate) > strtotime($pushDate)) {
+            $command = 'git log -1 --pretty=format:%an --grep="^Merge.*origin/"';
+        } else {
+            $command = 'git log -1 --pretty=format:%an';
+        }
+
+        // Execute the command and capture the output
+        $output = trim(exec($command));
+
+        // Return the output
+        return $output;
+    }
+
     private function getMergedBy($currentBranch)
     {
         $output = [];
         $status = null;
         exec('git log --merges -n 1 --format="%an" ' . $currentBranch, $output, $status);
+        if ($status) {
+            return $this->getLastActionDeveloper();
+        }
         return $status === 0 ? $output[0] : '';
     }
 
