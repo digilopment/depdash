@@ -30,7 +30,10 @@ class DepDash
             $newName = str_replace($this->config['projectRename']['default'], $this->config['projectRename']['new'], $subdir);
             $projectName = str_replace('-', ' ', ucwords($newName));
             $deploymentProject = [
-                'deploymentProject' => ['name' => $this->config['projectPrefix'] . '' . $projectName . '' . $this->config['projectSuffiks']],
+                'deploymentProject' => [
+                    'name' => $this->config['projectPrefix'] . '' . $projectName . '' . $this->config['projectSuffiks'],
+                    'datetime' => date('Y-m-d H:i:s')
+                ],
                 'environmentStatuses' => $environmentStatuses
             ];
 
