@@ -87,7 +87,7 @@ class DepDash
                     $repoResults['lastMergeDay'] = '';
                 }
 
-                $lastPullDate = $this->getLastPullDate($currentBranch);
+                $lastPullDate = $this->getLastPullPushDate($currentBranch);
                 if ($lastPullDate) {
                     $repoResults['finishedDate'] = $lastPullDate;
                 } else {
@@ -162,7 +162,7 @@ class DepDash
         return $status === 0 ? $output[0] : '';
     }
 
-    private function getPullPushDate()
+    private function getLastPullPushDate($currentBranch)
     {
         // Get the date of the last pull operation
         $pullDate = trim(exec('git log -1 --format=%cd --date=local'));
@@ -183,6 +183,9 @@ class DepDash
         $output = [];
         $status = null;
         exec('git log --merges -n 1 --format="%ci"', $output, $status);
+        if (!$output) {
+            $this - $this->getLastPullPushDate();
+        }
         return $status === 0 ? $output[0] : '';
     }
 
