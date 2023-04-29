@@ -151,7 +151,8 @@ class DepDash
 
     private function getMergeVersion()
     {
-        return exec('git rev-list --count --merges master');
+        $res = exec('git rev-list --count --merges master');
+        return ($res == 0) ? 1 : $res;
     }
 
     private function getLastPullDate($currentBranch)
