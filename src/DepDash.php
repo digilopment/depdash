@@ -196,23 +196,8 @@ class DepDash
 
     private function getLastActionDeveloper()
     {
-        // Get the date of the last pull operation
-        $pullDate = trim(exec('git log -1 --format=%cd --date=local'));
-
-        // Get the date of the last push operation
-        $pushDate = trim(exec('git log -1 --format=%cd --date=local --reverse origin/master..master'));
-
-        // Determine whether the last action was a pull or push
-        if (strtotime($pullDate) > strtotime($pushDate)) {
-            $command = 'git log -1 --pretty=format:%an --grep="^Merge.*origin/"';
-        } else {
-            $command = 'git log -1 --pretty=format:%an';
-        }
-
-        // Execute the command and capture the output
+        $command = 'git log -1 --pretty=format:%an';
         $output = trim(exec($command));
-
-        // Return the output
         return $output;
     }
 
