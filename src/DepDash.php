@@ -184,7 +184,7 @@ class DepDash
         $status = null;
         exec('git log --merges -n 1 --format="%ci"', $output, $status);
         if (!$output) {
-            $this - $this->getLastPullPushDate();
+            $this - $this->getLastPullPushDate($currentBranch);
         }
         return $status === 0 ? $output[0] : '';
     }

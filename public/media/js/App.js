@@ -9,10 +9,6 @@ function dataSource() {
 function depDashMainApp(){
     fetch(dataSource()).then(response => response.json()).then(data => {
     const template = `
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-12">
-                    <h1 style="padding-bottom:30px; padding-top: 20px;">Deployment Dashboard</h1>
                         ${data.map(item => `
                           <h2>${item.deploymentProject.name}</h2>
                           <table class="table">
@@ -55,10 +51,7 @@ function depDashMainApp(){
                               </tbody>
                           </table>
                           <br/>`
-                        ).join('')}
-                </div>
-            </div>
-        </div>`;
+                        ).join('')}`;
         const element = document.getElementById("mkz-prod-www1");
         element.innerHTML = template;
     });
