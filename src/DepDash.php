@@ -206,7 +206,7 @@ class DepDash
         $output = [];
         $status = null;
         exec('git log --merges -n 1 --format="%an" ' . $currentBranch, $output, $status);
-        if ($status) {
+        if (!$output) {
             return $this->getLastActionDeveloper();
         }
         return $status === 0 ? $output[0] : '';
