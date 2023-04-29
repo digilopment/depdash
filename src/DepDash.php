@@ -87,7 +87,7 @@ class DepDash
                     $repoResults['lastMergeDay'] = '';
                 }
 
-                $lastPullDate = $this->getLastPullPushDate($currentBranch);
+                $lastPullDate = $this->getLastPullDate($currentBranch);
                 if ($lastPullDate) {
                     $repoResults['finishedDate'] = $lastPullDate;
                 } else {
