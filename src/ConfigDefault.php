@@ -7,6 +7,7 @@ class Config
     {
         return [
             'getRepositoriesPath' => __DIR__ . '/../../',
+            'jsonFilePath' => __DIR__ . '/../public/json',
             'enviroments' => ['prod', 'stage', 'local'],
             'projectRename' => ['default' => ['ares'], 'new' => 'Ares Microsites'],
             'projectExclude' => [],

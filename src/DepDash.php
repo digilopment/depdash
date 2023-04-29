@@ -62,7 +62,7 @@ class DepDash
 
     public function writeToFile()
     {
-        file_put_contents(__DIR__ . '/../public/json/data.json', $this->results);
+        file_put_contents($this->config['jsonFilePath'] . '/data.json', $this->results);
         return $this;
     }
 
