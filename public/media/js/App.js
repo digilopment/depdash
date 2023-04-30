@@ -85,7 +85,7 @@ const depDashMainApp = async () => {
     }
     const urlFragment = window.location.hash;
     if (urlFragment) {
-        const elementId = urlFragment.slice(1); // remove the "#" character from the fragment
+        const elementId = urlFragment.slice(1);
         const element = document.getElementById(elementId);
         if (element) {
             element.style.border = '6px solid red';

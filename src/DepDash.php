@@ -242,7 +242,7 @@ class DepDash
             }, preg_split('/\s{2,}/', $header));
             foreach ($lines as $line) {
                 $row = preg_split('/\s{2,}/', $line);
-                if (count($columns) == count($row)) { // Check that the arrays have the same number of elements
+                if (count($columns) == count($row)) {
                     $item = array_combine($columns, $row);
                     if (!empty($item)) {
                         $data[] = $item;
