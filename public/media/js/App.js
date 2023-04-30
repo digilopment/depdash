@@ -33,7 +33,7 @@ const depDashMainApp = async () => {
                 <b>${envName}</b> 
                 is <small><span style="color:${dockerColor}"><b>${dockerStatus}</b></span> 
                 on <b><span style="color:${dockerColor}">${containers}</span> containers</b>
-                with <b><span style="color:${dockerColor}">${repositories}</span> repositories</b>
+                <!--with <b><span style="color:${dockerColor}">${repositories}</span> repositories</b>-->
               </h2>
               <table class="table">
                 <thead>
@@ -47,7 +47,7 @@ const depDashMainApp = async () => {
                   </tr>
                 </thead>
                 <tbody>
-                  ${data[0].dockerStatuses.docker_ps.map(({ container_id, names, image, status, ports = '' }) => `
+                  ${data[envId].dockerStatuses.docker_ps.map(({ container_id, names, image, status, ports = '' }) => `
                     <tr style="font-size: 13px;">
                       <td>${container_id}</td>
                       <td><b>${names}</b></td>
