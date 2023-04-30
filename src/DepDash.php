@@ -232,6 +232,7 @@ class DepDash
     private function getDockerPs()
     {
         $output = shell_exec('docker ps');
+        //$output = shell_exec('docker ps --format "table {{.Names}}\t\t{{.Image}}\t\t{{.ID}}\t\t{{.Status}}\t\t{{.Ports}}"');
         $data = [];
         if ($output) {
             $lines = explode(PHP_EOL, trim($output));
@@ -241,9 +242,11 @@ class DepDash
             }, preg_split('/\s{2,}/', $header));
             foreach ($lines as $line) {
                 $row = preg_split('/\s{2,}/', $line);
-                $item = array_combine($columns, $row);
-                if (!empty($item)) {
-                    $data[] = $item;
+                if (count($columns) == count($row)) { // Check that the arrays have the same number of elements
+                    $item = array_combine($columns, $row);
+                    if (!empty($item)) {
+                        $data[] = $item;
+                    }
                 }
             }
         }
