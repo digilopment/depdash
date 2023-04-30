@@ -21,12 +21,10 @@ class DepDash
         foreach ($subdirs as $subdir) {
             $path = $this->dir . DIRECTORY_SEPARATOR . $subdir;
             chdir($path);
-
             $repositoryUrl = $this->getRepositoryUrl();
             $mergeVersion = $this->getMergeVersion();
-
             $environmentStatuses = $this->getEnvironmentStatuses($mergeVersion, $repositoryUrl, $subdir);
-
+            $dockerStatuses = $this->getDockerStatuses();
             $newName = str_replace($this->config['projectRename']['default'], $this->config['projectRename']['new'], $subdir);
             $projectName = str_replace('-', ' ', ucwords($newName));
             $deploymentProject = [
@@ -34,7 +32,8 @@ class DepDash
                     'name' => $this->config['projectPrefix'] . '' . $projectName . '' . $this->config['projectSuffiks'],
                     'datetime' => date('Y-m-d H:i:s')
                 ],
-                'environmentStatuses' => $environmentStatuses
+                'environmentStatuses' => $environmentStatuses,
+                'dockerStatuses' => $dockerStatuses,
             ];
 
             $results[] = $deploymentProject;
@@ -66,6 +65,13 @@ class DepDash
         return $this;
     }
 
+    private function getDockerStatuses()
+    {
+        return [
+            'docker_ps' => $this->getDockerPs(),
+        ];
+    }
+
     private function getEnvironmentStatuses($mergeVersion, $repositoryUrl, $subdir)
     {
         $envs = $this->config['enviroments'];
@@ -95,9 +101,10 @@ class DepDash
                     $repoResults['finishedDate'] = '';
                 }
 
-                $mergedBy = $this->getMergedBy($currentBranch);
-                if ($mergedBy) {
-                    $repoResults['reasonSummary'] = 'Manual run by ' . $mergedBy;
+                $lastActivityBy = $this->getLastActionDeveloper($currentBranch);
+                $lastMergeBy = $this->getMergedBy();
+                if ($lastActivityBy) {
+                    $repoResults['reasonSummary'] = '<b>Merged by</b>:' . $lastMergeBy . '<br/><b>Deployed by</b>: ' . $lastActivityBy;
                 } else {
                     $error++;
                     $repoResults['reasonSummary'] = '';
@@ -165,13 +172,8 @@ class DepDash
 
     private function getLastPullPushDate($currentBranch)
     {
-        // Get the date of the last pull operation
         $pullDate = trim(exec('git log -1 --format=%cd --date=local'));
-
-        // Get the date of the last push operation
-        $pushDate = trim(exec('git log -1 --format=%cd --date=local --reverse origin/master..master'));
-
-        // Compare the dates and return the newer one
+        $pushDate = trim(exec("git log -1 --format=%cd --date=local --reverse origin/$currentBranch..$currentBranch"));
         if (strtotime($pullDate) > strtotime($pushDate)) {
             return $pullDate;
         } else {
@@ -198,22 +200,63 @@ class DepDash
         return $status === 0 ? $output[0] : '';
     }
 
-    private function getLastActionDeveloper()
+    private function getLastActionDeveloper($currentBranch)
     {
-        $command = 'git log -1 --pretty=format:%an';
+        $command = "git log -1 --pretty=format:%an $currentBranch";
         $output = trim(exec($command));
         return $output;
     }
 
-    private function getMergedBy($currentBranch)
+    private function getMergedBy()
     {
         $output = [];
         $status = null;
-        exec('git log --merges -n 1 --format="%an" ' . $currentBranch, $output, $status);
+        exec('git log --merges -n 1 --format="%an" HEAD', $output, $status);
         if (!$output) {
-            return $this->getLastActionDeveloper();
+            return $this->getLastActionDeveloper('HEAD');
         }
         return $status === 0 ? $output[0] : '';
     }
+
+    private function getDockerPs()
+    {
+        $output = shell_exec('docker ps');
+        $data = [];
+        if ($output) {
+            $lines = explode(PHP_EOL, trim($output));
+            $header = array_shift($lines);
+            $columns = array_map(function ($col) {
+                return preg_replace('/\s+/', '_', strtolower($col));
+            }, preg_split('/\s{2,}/', $header));
+            foreach ($lines as $line) {
+                $row = preg_split('/\s{2,}/', $line);
+                $item = array_combine($columns, $row);
+                if (!empty($item)) {
+                    $data[] = $item;
+                }
+            }
+        }
+        return $data;
+    }
+
+    /* private function getLastPullPushActionDeveloper()
+      {
+      // Get the author of the last commit on the current branch
+      $command = 'git log -1 --pretty=format:%an HEAD';
+      $output = trim(exec($command));
+      return $output;
+      } */
+
+    /* private function getMergedBy($currentBranch)
+      {
+      $output = [];
+      $status = null;
+      exec('git log --merges -n 1 --format="%an" ' . $currentBranch, $output, $status);
+      return $this->getLastPullPushActionDeveloper();
+      if (!$output) {
+      return $this->getLastPullPushActionDeveloper();
+      }
+      return $status === 0 ? $output[0] : '';
+      } */
 
 }

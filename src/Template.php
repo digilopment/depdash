@@ -17,14 +17,14 @@ class Template
                     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
                     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
                     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-                    <script src="/media/js/App.js" data-source="/bin.php" defer></script>
+                    <script src="/media/js/App.js" data-source="'.(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https://" : "http://") . $_SERVER['HTTP_HOST'].'/bin.php" defer></script>
                 </head>
                 <body>
                     <div class="container">
                         <div class="row justify-content-center">
                             <div class="col-12">
                                 <h1 style="padding-bottom:30px; padding-top: 20px;">Deployment Dashboard</h1>
-                                <div id="mkz-prod-www1"></div>
+                                <div id="mkz-sk-enviroments"></div>
                             </div>
                         </div>
                     </div>
