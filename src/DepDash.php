@@ -101,6 +101,14 @@ class DepDash
                     $repoResults['finishedDate'] = '';
                 }
 
+                $totalCommits = $this->getTotalCommits();
+                if ($totalCommits) {
+                    $repoResults['totalCommits'] = $totalCommits;
+                } else {
+                    $error++;
+                    $repoResults['totalCommits'] = '';
+                }
+
                 $lastActivityBy = $this->getLastActionDeveloper($currentBranch);
                 $lastMergeBy = $this->getMergedBy();
                 if ($lastActivityBy) {
@@ -249,24 +257,10 @@ class DepDash
         return $commit_messages[0];
     }
 
-    /* private function getLastPullPushActionDeveloper()
-      {
-      // Get the author of the last commit on the current branch
-      $command = 'git log -1 --pretty=format:%an HEAD';
-      $output = trim(exec($command));
-      return $output;
-      } */
-
-    /* private function getMergedBy($currentBranch)
-      {
-      $output = [];
-      $status = null;
-      exec('git log --merges -n 1 --format="%an" ' . $currentBranch, $output, $status);
-      return $this->getLastPullPushActionDeveloper();
-      if (!$output) {
-      return $this->getLastPullPushActionDeveloper();
-      }
-      return $status === 0 ? $output[0] : '';
-      } */
+    private function getTotalCommits()
+    {
+        $output = shell_exec('git rev-list --all --count');
+        return (int) $output;
+    }
 
 }

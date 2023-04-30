@@ -62,11 +62,11 @@ const depDashMainApp = async () => {
           </tr>
           </thead>
           <tbody>
-            ${environmentStatuses.map(({ environment: { id, name, repoUrl }, deploymentResult: { deploymentState, deploymentVersionName, finishedDate, reasonSummary } }) => `
+            ${environmentStatuses.map(({ environment: { id, name, repoUrl }, deploymentResult: { deploymentState, deploymentVersionName, finishedDate, reasonSummary, totalCommits } }) => `
               <tr>
                 <th scope="row"><a target="_blank" href="${repoUrl}">${id}</a></th>
                 <td><a href="#${envName}">${name}</a></td>
-                <td>${deploymentVersionName}</td>
+                <td>${deploymentVersionName} <br/><small><i><b>${totalCommits}</b> commits</i></small></td>
                 <td style="color: ${{SUCCESS: 'green', UNKNOWN: 'orange', FAILED: 'red'}[deploymentState] || ''}">
                   ${deploymentState === 'UNKNOWN' ? 'IN PROGRESS' : deploymentState}
                 </td>
