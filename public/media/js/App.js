@@ -17,17 +17,17 @@ const depDashMainApp = async () => {
         <b>${envName}</b> 
         is <small><span style="color:${dockerColor}"><b>${dockerStatus}</b></span> 
         on <b><span style="color:${dockerColor}">${containers}</span> containers</b>
-        with <b><span style="color:${dockerColor}">${repositories}</span></b> repositories
+        with <b><span style="color:${dockerColor}">${repositories}</span> repositories</b>
       </h2>
       <table class="table">
         <thead>
           <tr>
-            <th>#</th>
-            <th>Container</th>
-            <th>Image</th>
-            <th>Status</th>
-            <th>Up</th>
-            <th>Ports</th>
+            <th style="width: 16%">#</th>
+            <th style="width: 16%">Container</th>
+            <th style="width: 16%">Image</th>
+            <th style="width: 20%;text-align:center">Status</th>
+            <th style="width: 16%">Up</th>
+            <th style="width: 16%">Ports</th>
           </tr>
         </thead>
         <tbody>
@@ -36,7 +36,7 @@ const depDashMainApp = async () => {
               <td>${container_id}</td>
               <td><b>${names}</b></td>
               <td>${image}</td>
-              <td style="color: ${status ? 'green' : 'red'};">
+              <td style="color: ${status ? 'green' : 'red'};text-align:center">
                 ${status ? 'RUNNING' : 'STOPPED'}
               </td>
               <td>${status}</td>
@@ -53,13 +53,13 @@ const depDashMainApp = async () => {
         <table class="table">
           <thead>
             <tr>
-              <th>#</th>
-              <th>Name</th>
-              <th>Branch or tag</th>
-              <th>Status</th>
-              <th>Finished at</th>
-              <th>Triggered by</th>
-            </tr>
+            <th style="width: 5%">#</th>
+            <th style="width: 15%">Name</th>
+            <th style="width: 15%">Branch</th>
+            <th style="width: 12%">Status</th>
+            <th style="width: 13%">Finished</th>
+            <th style="width: 45%">Triggered by</th>
+          </tr>
           </thead>
           <tbody>
             ${environmentStatuses.map(({ environment: { id, name, repoUrl }, deploymentResult: { deploymentState, deploymentVersionName, finishedDate, reasonSummary } }) => `

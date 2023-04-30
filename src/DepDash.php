@@ -104,7 +104,10 @@ class DepDash
                 $lastActivityBy = $this->getLastActionDeveloper($currentBranch);
                 $lastMergeBy = $this->getMergedBy();
                 if ($lastActivityBy) {
-                    $repoResults['reasonSummary'] = '<b>Merged by</b>:' . $lastMergeBy . '<br/><b>Deployed by</b>: ' . $lastActivityBy;
+                    $repoResults['reasonSummary'] = ''
+                        . '<b>Merged by</b>:' . $lastMergeBy . '<br/>'
+                        . '<b>Deployed by</b>: ' . $lastActivityBy . '<br/><br/>'
+                        . '<b>Last message:</b> <i>' . $this->getLastCommitMessage() . '</i>';
                 } else {
                     $error++;
                     $repoResults['reasonSummary'] = '';
@@ -237,6 +240,13 @@ class DepDash
             }
         }
         return $data;
+    }
+
+    private function getLastCommitMessage()
+    {
+        $output = shell_exec('git log -n 10 --pretty=format:"%s" | grep -v "CHANGELOG.md"');
+        $commit_messages = explode("\n", $output);
+        return $commit_messages[0];
     }
 
     /* private function getLastPullPushActionDeveloper()
