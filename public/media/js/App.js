@@ -1,9 +1,15 @@
 const depDashDataSource = () => document.currentScript.getAttribute('data-source') || '/json/data.json';
+const renderBeforeSource = () => document.currentScript.getAttribute('data-render-before') || '';
 
 const depDashMainApp = async () => {
 
-    const renderBefore = 'WC TV Noviny SK CMS';
     const showTemplate = true;
+    const enableRenderBeforeSource = true;
+    let renderBefore = 'WC TV Noviny SK CMS';
+
+    if (renderBeforeSource() && enableRenderBeforeSource) {
+        renderBefore = renderBeforeSource();
+    }
 
     var scriptUrls = [
     ];
@@ -158,7 +164,7 @@ const depDashMainApp = async () => {
         }
 
         if (!elementFound) {
-            const h1s = document.querySelectorAll('h1');
+            const h1s = document.querySelectorAll('.col-12');
             if (h1s.length > 0) {
                 const newDiv = document.createElement('div');
                 newDiv.setAttribute('id', depDashRoot);
