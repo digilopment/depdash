@@ -83,7 +83,7 @@ class DepDash
 
             $currentBranch = $this->getCurrentBranch();
             if ($currentBranch) {
-                $repoResults['deploymentVersionName'] = $currentBranch;
+                $repoResults['deploymentVersionName'] = $currentBranch . '<br/><br/><b><small>Last message:</b> <i>' . $this->getLastCommitMessage() . '</i></small>';
 
                 $lastMergeDate = $this->getLastMergeDate($currentBranch);
                 if ($lastMergeDate) {
@@ -112,10 +112,13 @@ class DepDash
                 $lastActivityBy = $this->getLastActionDeveloper($currentBranch);
                 $lastMergeBy = $this->getMergedBy();
                 if ($lastActivityBy) {
+                    $urlPattern = function ($name) {
+                        $parts = explode(' ', $name);
+                        return 'https://deploy.efabrica.sk/browse/user/' . strtolower(iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', end($parts)));
+                    };
                     $repoResults['reasonSummary'] = ''
-                        . '<b>Merged by</b>:' . $lastMergeBy . '<br/>'
-                        . '<b>Deployed by</b>: ' . $lastActivityBy . '<br/><br/>'
-                        . '<b>Last message:</b> <i>' . $this->getLastCommitMessage() . '</i>';
+                        . '<b>Merged by</b> <a href="' . $urlPattern($lastMergeBy) . '" target="_blank">' . $lastMergeBy . '</a><br/>'
+                        . '<b>Deployed by</b>: <a href="' . $urlPattern($lastActivityBy) . '" target="_blank">' . $lastActivityBy . '</a><br/><br/>';
                 } else {
                     $error++;
                     $repoResults['reasonSummary'] = '';
@@ -134,7 +137,8 @@ class DepDash
                 'environment' => [
                     'id' => $mergeVersion,
                     'repoUrl' => $repositoryUrl,
-                    'name' => $this->config['enviromentId']($env)
+                    'name' => $this->config['enviromentId']($env),
+                    'description' => $this->config['enviromentDescription'] ?? ''
                 ],
                 'deploymentResult' => $repoResults
             ];
@@ -232,7 +236,6 @@ class DepDash
     private function getDockerPs()
     {
         $output = shell_exec('docker ps');
-        //$output = shell_exec('docker ps --format "table {{.Names}}\t\t{{.Image}}\t\t{{.ID}}\t\t{{.Status}}\t\t{{.Ports}}"');
         $data = [];
         if ($output) {
             $lines = explode(PHP_EOL, trim($output));

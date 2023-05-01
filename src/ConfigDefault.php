@@ -13,6 +13,7 @@ class Config
             'projectExclude' => [],
             'projectPrefix' => 'WC ',
             'projectSuffiks' => ' SK',
+            'enviromentDescription' => 'Markiza Production<br/>',
             'enviromentId' => function ($env) {
                 $enviromentId = 'mkz-<env>-www1';
                 return str_replace('<env>', $env, $enviromentId);

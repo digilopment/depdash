@@ -1,5 +1,5 @@
 const dataSource = () => document.currentScript.getAttribute('data-source') || '/json/data.json';
-
+const renderBefore = 'WC TV Noviny SK CMS';
 function findUniqueEnvironmentsName(data) {
     const uniqueEnvironments = {};
     const result = [];
@@ -31,7 +31,7 @@ const depDashMainApp = async () => {
                <a href="#${envName}" style="font-size:10px" target="_blank"><img style="padding-bottom:20px" src="/media/img/docker-small.jpg" alt="" /></a>
               <h2 id="" style="display:inline">DockerENV: 
                 <b>${envName}</b> 
-                is <small><span style="color:${dockerColor}"><b>${dockerStatus}</b></span> 
+                is <small><span style="color:${dockerColor}"><b>${dockerStatus}</b></span></small>
                 on <b><span style="color:${dockerColor}">${containers}</span> containers</b>
                 <!--with <b><span style="color:${dockerColor}">${repositories}</span> repositories</b>-->
               </h2>
@@ -67,25 +67,29 @@ const depDashMainApp = async () => {
                 if (environmentStatuses[0].environment.name === envName) {
                     return `
                 <div id="${name.replace(/\s+/g, '')}">
-                  <a href="#${name.replace(/\s+/g, '')}" style="font-size:10px" target="_blank"><img style="padding-bottom:13px" src="/media/img/markiza-small.jpg" alt="" /></a>
-                  <h2 style="display:inline">${name}</h2>
+                  <!--<a href="#${name.replace(/\s+/g, '')}" style="font-size:10px" target="_blank">
+                    <img style="padding-bottom:13px" src="/media/img/markiza-small.jpg" alt="" />
+                  </a>-->
+                  <a class="repository-name" href="#${name.replace(/\s+/g, '')}" style="color: black;text-decoration:none;" target="_blank">
+                    <h2 style="display:inline">${name}</h2>
+                  </a>
                   <table class="table">
                     <thead>
                       <tr>
                         <th style="width: 5%">#</th>
                         <th style="width: 15%">Name</th>
-                        <th style="width: 15%">Branch</th>
+                        <th style="width: 35%">Branch</th>
                         <th style="width: 12%">Status</th>
                         <th style="width: 13%">Finished</th>
-                        <th style="width: 45%">Triggered by</th>
+                        <th style="width: 25%">Triggered by</th>
                       </tr>
                     </thead>
                     <tbody>
-                      ${environmentStatuses.map(({ environment: { id, name, repoUrl }, deploymentResult: { deploymentState, deploymentVersionName, finishedDate, reasonSummary, totalCommits } }) => `
+                      ${environmentStatuses.map(({ environment: { id, name, description, repoUrl }, deploymentResult: { deploymentState, deploymentVersionName, finishedDate, reasonSummary, totalCommits } }) => `
                         <tr>
                           <th scope="row"><a target="_blank" href="${repoUrl}">${id}</a></th>
-                          <td><a href="#${envName}">${name}</a></td>
-                          <td>${deploymentVersionName} <br/><small><i><b>${totalCommits}</b> commits</i></small></td>
+                          <td>${description} <a href="#${envName}">${name}</a></td>
+                          <td>${deploymentVersionName} <br/><small><i><b>Total commits: </b>${totalCommits}</i></small></td>
                           <td style="color: ${{SUCCESS: 'green', UNKNOWN: 'orange', FAILED: 'red'}[deploymentState] || ''}">
                             ${deploymentState === 'UNKNOWN' ? 'IN PROGRESS' : deploymentState}
                           </td>
@@ -106,21 +110,58 @@ const depDashMainApp = async () => {
         }
     }).join('')}`;
 
-    var elem = document.getElementById('mkz-sk-enviroments');
-    if (elem) {
-        elem.innerHTML = template;
-    }
-    const urlFragment = window.location.hash;
-    if (urlFragment) {
-        const elementId = urlFragment.slice(1);
-        const element = document.getElementById(elementId);
-        if (element) {
-            element.style.border = '6px solid red';
-            element.style.marginLeft = '-6px';
-            element.style.marginRight = '-6px';
-            element.scrollIntoView({behavior: "smooth"});
+
+    function renderTemplateBeforeElement(renderBefore, template) {
+        const depDashRoot = 'mkz-sk-enviroments';
+        const headings = document.querySelectorAll('h2');
+        let elementFound = false;
+        for (let i = 0; i < headings.length; i++) {
+            const heading = headings[i];
+            if (heading.textContent.trim() === renderBefore) {
+                elementFound = true;
+                const newDiv = document.createElement('div');
+                newDiv.setAttribute('id', depDashRoot);
+                heading.parentNode.insertBefore(newDiv, heading);
+                break;
+            }
+        }
+
+        if (!elementFound) {
+            const h1s = document.querySelectorAll('h1');
+            if (h1s.length > 0) {
+                const newDiv = document.createElement('div');
+                newDiv.setAttribute('id', depDashRoot);
+                h1s[0].parentNode.insertBefore(newDiv, h1s[0].nextSibling);
+            } else {
+                console.error('Could not find element to render the template.');
+                return;
+            }
+        }
+
+        var elem = document.getElementById(depDashRoot);
+        if (elem) {
+            elem.innerHTML = template;
+        } else {
+            console.error('Failed to insert the new element.');
         }
     }
+
+    function highlightElement() {
+        const urlFragment = window.location.hash;
+        if (urlFragment) {
+            const elementId = urlFragment.slice(1);
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.style.border = '6px solid red';
+                element.style.marginLeft = '-6px';
+                element.style.marginRight = '-6px';
+                element.scrollIntoView({behavior: "smooth"});
+            }
+        }
+    }
+
+    renderTemplateBeforeElement(renderBefore, template);
+    highlightElement();
 
 };
 depDashMainApp();
