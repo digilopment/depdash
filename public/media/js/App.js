@@ -2,6 +2,9 @@ const depDashDataSource = () => document.currentScript.getAttribute('data-source
 
 const depDashMainApp = async () => {
 
+    const renderBefore = 'WC TV Noviny SK CMS';
+    const showTemplate = true;
+
     var scriptUrls = [
     ];
     for (var i = 0; i < scriptUrls.length; i++) {
@@ -9,11 +12,9 @@ const depDashMainApp = async () => {
         script.src = scriptUrls[i];
         document.body.appendChild(script);
     }
-    const renderBefore = 'WC TV Noviny SK CMS';
 
     const response = await fetch(depDashDataSource());
     const data = await response.json();
-    const showTemplate = true;
     const environments = findUniqueEnvironmentsName(data);
     const template = `
     ${environments.map((envId) => {
@@ -30,7 +31,7 @@ const depDashMainApp = async () => {
                 <b>${envName}</b> 
                 is <small><span style="color:${dockerColor}"><b>${dockerStatus}</b></span></small>
                 on <b><span style="color:${dockerColor}">${containers}</span> containers</b>
-                <!--with <b><span style="color:${dockerColor}">${repositories}</span> repositories</b>-->
+                <!--with <b><span style="color:${dockerColor}">${containers}</span> images</b>-->
               </h2>
               <table class="table">
                 <thead>
