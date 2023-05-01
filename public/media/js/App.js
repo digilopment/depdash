@@ -1,20 +1,17 @@
-const dataSource = () => document.currentScript.getAttribute('data-source') || '/json/data.json';
-const renderBefore = 'WC TV Noviny SK CMS';
-function findUniqueEnvironmentsName(data) {
-    const uniqueEnvironments = {};
-    const result = [];
-    for (let i = 0; i < data.length; i++) {
-        const env = data[i].environmentStatuses[0].environment.name.replace(/\s/g, '');
-        if (!uniqueEnvironments[env]) {
-            uniqueEnvironments[env] = env;
-            result.push(i);
-        }
-    }
-    return result;
-}
+const depDashDataSource = () => document.currentScript.getAttribute('data-source') || '/json/data.json';
 
 const depDashMainApp = async () => {
-    const response = await fetch(dataSource());
+
+    var scriptUrls = [
+    ];
+    for (var i = 0; i < scriptUrls.length; i++) {
+        var script = document.createElement('script');
+        script.src = scriptUrls[i];
+        document.body.appendChild(script);
+    }
+    const renderBefore = 'WC TV Noviny SK CMS';
+
+    const response = await fetch(depDashDataSource());
     const data = await response.json();
     const showTemplate = true;
     const environments = findUniqueEnvironmentsName(data);
@@ -78,10 +75,10 @@ const depDashMainApp = async () => {
                       <tr>
                         <th style="width: 5%">#</th>
                         <th style="width: 15%">Name</th>
-                        <th style="width: 35%">Branch</th>
+                        <th style="width: 34%">Branch</th>
                         <th style="width: 12%">Status</th>
                         <th style="width: 13%">Finished</th>
-                        <th style="width: 25%">Triggered by</th>
+                        <th style="width: 26%">Triggered by</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -93,7 +90,7 @@ const depDashMainApp = async () => {
                           <td style="color: ${{SUCCESS: 'green', UNKNOWN: 'orange', FAILED: 'red'}[deploymentState] || ''}">
                             ${deploymentState === 'UNKNOWN' ? 'IN PROGRESS' : deploymentState}
                           </td>
-                          <td>${finishedDate ? moment(finishedDate).fromNow() : ''}</td>
+                          <td>${finishedDate ? timeAgo(finishedDate) : ''}</td>
                           <td>${reasonSummary}</td>
                         </tr>
                       `).join('')}
@@ -110,6 +107,39 @@ const depDashMainApp = async () => {
         }
     }).join('')}`;
 
+
+    function timeAgo(finishedDate) {
+        var seconds = Math.floor((new Date() - new Date(finishedDate)) / 1000);
+        var interval = {
+            year: 31536000,
+            month: 2592000,
+            week: 604800,
+            day: 86400,
+            hour: 3600,
+            minute: 60
+        };
+        for (var key in interval) {
+            if (seconds >= interval[key]) {
+                var count = Math.floor(seconds / interval[key]);
+                return count + ' ' + key + (count > 1 ? 's' : '') + ' ago';
+            }
+        }
+        return 'just now';
+    }
+
+
+    function findUniqueEnvironmentsName(data) {
+        const uniqueEnvironments = {};
+        const result = [];
+        for (let i = 0; i < data.length; i++) {
+            const env = data[i].environmentStatuses[0].environment.name.replace(/\s/g, '');
+            if (!uniqueEnvironments[env]) {
+                uniqueEnvironments[env] = env;
+                result.push(i);
+            }
+        }
+        return result;
+    }
 
     function renderTemplateBeforeElement(renderBefore, template) {
         const depDashRoot = 'mkz-sk-enviroments';

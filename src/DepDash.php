@@ -113,8 +113,8 @@ class DepDash
                 $lastMergeBy = $this->getMergedBy();
                 if ($lastActivityBy) {
                     $urlPattern = function ($name) {
-                        $parts = explode(' ', $name);
-                        return 'https://git.efabrica.sk/search?scope=users&search=' . strtolower(iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', end($parts)));
+                        $search = str_replace(' ', '+', preg_replace('/\d/', '', $name));
+                        return 'https://git.efabrica.sk/search?scope=users&search=' . strtolower(iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $search));
                     };
                     $repoResults['reasonSummary'] = ''
                         . '<b>Merged by</b> <a href="' . $urlPattern($lastMergeBy) . '" target="_blank">' . $lastMergeBy . '</a><br/>'
