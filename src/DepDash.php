@@ -114,7 +114,7 @@ class DepDash
                 if ($lastActivityBy) {
                     $urlPattern = function ($name) {
                         $parts = explode(' ', $name);
-                        return 'https://deploy.efabrica.sk/browse/user/' . strtolower(iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', end($parts)));
+                        return 'https://git.efabrica.sk/search?scope=users&search=' . strtolower(iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', end($parts)));
                     };
                     $repoResults['reasonSummary'] = ''
                         . '<b>Merged by</b> <a href="' . $urlPattern($lastMergeBy) . '" target="_blank">' . $lastMergeBy . '</a><br/>'
