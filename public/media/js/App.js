@@ -32,8 +32,8 @@ const depDashMainApp = async () => {
         if (showTemplate) {
             return `
             <div id="${envName}">
-               <a href="#${envName}" style="font-size:10px" target="_blank"><img style="padding-bottom:20px" src="/media/img/docker-small.jpg" alt="" /></a>
-              <h2 id="" style="display:inline">DockerENV: 
+               <!--<a href="#${envName}" style="font-size:10px" target="_blank"><img style="padding-bottom:20px" src="/media/img/docker-small.jpg" alt="" /></a>-->
+              <h2 id="" style="display:inline"><a class="repository-name" href="#${name.replace(/\s+/g, '')}" style="color: black;text-decoration:none;" target="_blank">Docker ENV:</a>
                 <b>${envName}</b> 
                 is <small><span style="color:${dockerColor}"><b>${dockerStatus}</b></span></small>
                 on <b><span style="color:${dockerColor}">${containers}</span> containers</b>
