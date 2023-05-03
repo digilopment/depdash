@@ -1,6 +1,8 @@
 ## Change Log
 
 ### [Unreleased][unreleased]
+
+### [1.0.0] - 2023-05-03
 #### Added
 - Pridané počítadlo commitov
 - Pridaný skript pre nastavenie oprávnení
@@ -36,3 +38,8 @@
 
 #### Removed
 - Odstránenie komentárov
+
+### [1.0.0] - 2023-05-03
+
+[unreleased]: https://gitlab.dev.markiza.sk/devops/depdash/compare/1.0.0...master
+[1.0.0]: https://gitlab.dev.markiza.sk/devops/depdash/compare/8ec31e84459d962127984a5a353537eb57494a89...1.0.0
