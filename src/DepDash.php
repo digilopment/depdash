@@ -211,7 +211,7 @@ class DepDash
     {
         $output = [];
         $status = null;
-        exec('git rev-parse --abbrev-ref HEAD', $output, $status);
+        exec('git symbolic-ref -q --short HEAD || git describe --tags --exact-match', $output, $status);
         return $status === 0 ? $output[0] : '';
     }
 
