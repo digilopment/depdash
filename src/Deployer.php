@@ -24,27 +24,50 @@ class Deployer
         foreach ($this->folders as $folder) {
 
             chdir($folder);
-            shell_exec('git fetch --all');
-            $latest_tag_output = shell_exec('git describe --tags $(git rev-list --tags --max-count=1)');
-            $latest_tag = trim($latest_tag_output);
+            $outputFetchAll = $this->taskFetchAll();
+            $latestTagOutput = $this->taskGetLatestTag();
+            $latestTag = trim($latestTagOutput);
 
             if (!empty($this->customTagOrBranch)) {
-                $tag_or_branch = $this->customTagOrBranch;
-            } elseif (!empty($latest_tag)) {
-                $tag_or_branch = $latest_tag;
+                $tagOrBranch = $this->customTagOrBranch;
+            } elseif (!empty($latestTag)) {
+                $tagOrBranch = $latestTag;
             } else {
-                $tag_or_branch = 'master';
+                $tagOrBranch = 'master';
             }
-
-            shell_exec("git checkout $tag_or_branch");
 
             echo "Deployed folder: $folder\n";
             echo "Git fetch output:\n";
-            echo shell_exec('git fetch --all') . "\n";
-            echo "Tag/branch deployed: $tag_or_branch\n";
+            echo $outputFetchAll . "\n";
+            echo "Tag/branch deployed: $tagOrBranch\n";
             echo "Git checkout output:\n";
-            echo shell_exec("git checkout $tag_or_branch") . "\n";
+            echo $this->taskCheckout($tagOrBranch) . "\n";
+            echo "Composer output:\n";
+            echo $this->taskComposerInstall($folder) . "\n";
         }
+    }
+
+    private function taskFetchAll()
+    {
+        return shell_exec('git fetch --all');
+    }
+
+    private function taskGetLatestTag()
+    {
+        return shell_exec('git describe --tags $(git rev-list --tags --max-count=1)');
+    }
+
+    private function taskCheckout($tagOrBranch)
+    {
+        return shell_exec("git checkout $tagOrBranch");
+    }
+
+    private function taskComposerInstall($folder)
+    {
+        if (file_exists($folder . '/composer.lock')) {
+            return shell_exec("composer install");
+        }
+        return 'No composer found';
     }
 
     public function getFolders(): array
