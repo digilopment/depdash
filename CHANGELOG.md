@@ -2,6 +2,10 @@
 
 ### [Unreleased][unreleased]
 
+### [1.2.1] - 2023-05-04
+#### Added
+- composer install task
+
 ### [1.2.0] - 2023-05-04
 #### Added
 - naprogramovany deployer **php deploy.php <required>@string{repos} <optional>@string{branchOrTag}

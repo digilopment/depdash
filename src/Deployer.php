@@ -65,7 +65,7 @@ class Deployer
     private function taskComposerInstall($folder)
     {
         if (file_exists($folder . '/composer.lock')) {
-            return shell_exec("composer install");
+            return shell_exec("composer install --ignore-platform-reqs");
         }
         return 'No composer found';
     }
