@@ -2,6 +2,10 @@
 
 ### [Unreleased][unreleased]
 
+#### Added
+- naprogramovany deployer **php deploy.php <required>@string{repos} <optional>@string{branchOrTag}
+- @string{repos} je zoznam repositarov oddelenych ciarkov: **php deploy.php ares,katka** 
+
 ### [1.0.2] - 2023-05-03
 #### Fixed
 - fixnuta metoda na ziskanie aktualneh branch
