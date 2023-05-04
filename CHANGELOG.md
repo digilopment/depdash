@@ -2,6 +2,7 @@
 
 ### [Unreleased][unreleased]
 
+### [1.2.0] - 2023-05-04
 #### Added
 - naprogramovany deployer **php deploy.php <required>@string{repos} <optional>@string{branchOrTag}
 - @string{repos} je zoznam repositarov oddelenych ciarkov: **php deploy.php ares,katka** 
@@ -53,7 +54,8 @@
 
 ### [1.0.0] - 2023-05-03
 
-[unreleased]: https://gitlab.dev.markiza.sk/devops/depdash/compare/1.0.1...master
+[unreleased]: https://gitlab.dev.markiza.sk/devops/depdash/compare/1.2.0...master
+[1.2.0]: https://gitlab.dev.markiza.sk/devops/depdash/compare/1.0.2...1.2.0
 [1.0.2]: https://gitlab.dev.markiza.sk/devops/depdash/compare/1.0.1...1.0.2
 [1.0.1]: https://gitlab.dev.markiza.sk/devops/depdash/compare/1.0.0...1.0.1
 [1.0.0]: https://gitlab.dev.markiza.sk/devops/depdash/compare/8ec31e84459d962127984a5a353537eb57494a89...1.0.0
