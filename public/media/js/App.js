@@ -150,6 +150,7 @@ const depDashMainApp = async () => {
 
     function renderTemplateBeforeElement(renderBefore, template) {
         const depDashRoot = 'mkz-sk-enviroments';
+        const mamaRoot = 'mama-enviroment';
         const headings = document.querySelectorAll('h2');
         let elementFound = false;
         for (let i = 0; i < headings.length; i++) {
@@ -166,20 +167,27 @@ const depDashMainApp = async () => {
         if (!elementFound) {
             const h1s = document.querySelectorAll('.col-12');
             if (h1s.length > 0) {
+
+                //DEPDASH
                 const newDiv = document.createElement('div');
                 newDiv.setAttribute('id', depDashRoot);
                 h1s[0].parentNode.insertBefore(newDiv, h1s[0].nextSibling);
+
+                //MAMA
+                const newDivMama = document.createElement('div');
+                newDivMama.setAttribute('id', mamaRoot);
+                h1s[0].parentNode.insertBefore(newDivMama, h1s[0].nextSibling);
             } else {
                 console.error('Could not find element to render the template.');
                 return;
             }
         }
 
-        var elem = document.getElementById(depDashRoot);
-        if (elem) {
-            elem.innerHTML = template;
+        if (getUrlParam('cloudEnv')) {
+            document.getElementById(mamaRoot).innerHTML = mamaMainApp();
+            document.querySelector('.col-12').style.display = 'none';
         } else {
-            console.error('Failed to insert the new element.');
+            document.getElementById(depDashRoot).innerHTML = template;
         }
     }
 
@@ -201,4 +209,64 @@ const depDashMainApp = async () => {
     highlightElement();
 
 };
+
+function getUrlParam(paramName) {
+    const searchParams = new URLSearchParams(window.location.search);
+    return encodeURIComponent(searchParams.get(paramName)) ?? '';
+}
+
+const mamaMainApp = () => {
+    const cloudEnv = getUrlParam('cloudEnv');
+    if (!cloudEnv) {
+        return '';
+    }
+    let urlWithQueryParam = '/mama.php';
+    if (cloudEnv !== '') {
+        urlWithQueryParam += `?cloudEnv=${encodeURIComponent(cloudEnv)}`;
+    }
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', urlWithQueryParam, false);
+    try {
+        xhr.send();
+        if (xhr.status === 200) {
+            const data = JSON.parse(xhr.responseText);
+            const tableBody = document.createElement('tbody');
+            tableBody.innerHTML = '';
+            var i = 1;
+            data.data.forEach(row => {
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td>${i}</td>
+                    <td>${row.application_id.toUpperCase()}</td>
+                    <td><strong>${row.version}</strong></td>
+                    <td>${row.updated_at}</td>
+                `;
+                tableBody.appendChild(newRow);
+                i++;
+            });
+            const tableHtml = tableBody.outerHTML;
+
+            return `<div id="mama">
+                  <a class="repository-name" href="" style="color: black;text-decoration:none;" target="_blank">
+                    <h2 style="display:inline">Enviroment <b>${cloudEnv}</b></h2>
+                  </a>
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th style="width: 7%">#</th>
+                        <th style="width: 31%">BoxName</th>
+                        <th style="width: 31%">Tag or Branch</th>
+                        <th style="width: 31%">Updated at</th>
+                      </tr>
+                    </thead>${tableHtml}</table>`;
+        } else {
+            throw new Error(`HTTP error! Status: ${xhr.status}`);
+        }
+    } catch (error) {
+        console.error('Error fetching data:', error.message);
+        return '<p>Error fetching data.</p>';
+    }
+
+};
+
 depDashMainApp();

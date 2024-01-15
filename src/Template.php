@@ -22,8 +22,6 @@ class Template
                     <div class="container">
                         <div class="row justify-content-center">
                             <div class="col-12">
-                                <h1 style="padding-bottom:30px; padding-top: 20px;">Deployment Dashboard</h1>
-                                <div id="mkz-sk-enviroments"></div>
                             </div>
                         </div>
                     </div>
